@@ -1,14 +1,22 @@
 pipeline {
     agent {
         docker {
-            image 'maven:3-alpine' 
-            args '-v /root/.m2:/root/.m2' 
+            image 'node:6-alpine'
+            args '-p 3000:3000 -p 5000:5000' 
         }
     }
+    environment {
+        CI = 'true'
+    }
     stages {
-        stage('Build') { 
+        stage('Build') {
             steps {
-                sh 'mvn -B -DskipTests clean package' 
+                sh 'npm install'
+            }
+        }
+        stage('Test') {
+            steps {
+                sh './jenkins/scripts/test.sh'
             }
         }
     }
